@@ -121,11 +121,7 @@ class RestfulLanceDBClient:
         """
         if isinstance(data, BaseModel):
             data: Dict[str, Any] = data.dict(exclude_none=True)
-        if isinstance(data, bytes):
-            req_kwargs = {"data": data}
-        else:
-            req_kwargs = {"json": data}
-
+        req_kwargs = {"data": data} if isinstance(data, bytes) else {"json": data}
         headers = self.headers.copy()
         if content_type is not None:
             headers["content-type"] = content_type

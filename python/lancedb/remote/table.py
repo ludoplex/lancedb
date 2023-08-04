@@ -41,8 +41,7 @@ class RemoteTable(Table):
         resp = self._conn._loop.run_until_complete(
             self._conn._client.post(f"/v1/table/{self._name}/describe/")
         )
-        schema = json_to_schema(resp["schema"])
-        return schema
+        return json_to_schema(resp["schema"])
 
     def to_arrow(self) -> pa.Table:
         raise NotImplementedError

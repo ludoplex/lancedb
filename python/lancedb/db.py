@@ -251,7 +251,7 @@ class LanceDBConnection(DBConnection):
         try:
             filesystem, path = fs_from_uri(self.uri)
         except pa.ArrowInvalid:
-            raise NotImplementedError("Unsupported scheme: " + self.uri)
+            raise NotImplementedError(f"Unsupported scheme: {self.uri}")
 
         try:
             paths = filesystem.get_file_info(
@@ -260,12 +260,11 @@ class LanceDBConnection(DBConnection):
         except FileNotFoundError:
             # It is ok if the file does not exist since it will be created
             paths = []
-        tables = [
+        return [
             os.path.splitext(file_info.base_name)[0]
             for file_info in paths
             if file_info.extension == "lance"
         ]
-        return tables
 
     def __len__(self) -> int:
         return len(self.table_names())
@@ -288,19 +287,18 @@ class LanceDBConnection(DBConnection):
         ---
         DBConnection.create_table
         """
-        if mode.lower() not in ["create", "overwrite"]:
+        if mode.lower() in {"create", "overwrite"}:
+            return LanceTable.create(
+                self,
+                name,
+                data,
+                schema,
+                mode=mode,
+                on_bad_vectors=on_bad_vectors,
+                fill_value=fill_value,
+            )
+        else:
             raise ValueError("mode must be either 'create' or 'overwrite'")
-
-        tbl = LanceTable.create(
-            self,
-            name,
-            data,
-            schema,
-            mode=mode,
-            on_bad_vectors=on_bad_vectors,
-            fill_value=fill_value,
-        )
-        return tbl
 
     def open_table(self, name: str) -> LanceTable:
         """Open a table in the database.
@@ -328,7 +326,7 @@ class LanceDBConnection(DBConnection):
         """
         try:
             filesystem, path = fs_from_uri(self.uri)
-            table_path = os.path.join(path, name + ".lance")
+            table_path = os.path.join(path, f"{name}.lance")
             filesystem.delete_dir(table_path)
         except FileNotFoundError:
             if not ignore_missing:

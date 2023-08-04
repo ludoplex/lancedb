@@ -193,8 +193,8 @@ def is_nullable(field: pydantic.fields.FieldInfo) -> bool:
     """Check if a Pydantic FieldInfo is nullable."""
     if isinstance(field.annotation, _GenericAlias):
         origin = field.annotation.__origin__
-        args = field.annotation.__args__
         if origin == Union:
+            args = field.annotation.__args__
             if len(args) == 2 and args[1] == type(None):
                 return True
     return False

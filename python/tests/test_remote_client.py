@@ -33,7 +33,7 @@ class MockLanceDBServer:
         await request.json()
         # TODO: do some matching
 
-        vecs = pd.Series([np.random.rand(128) for x in range(10)], name="vector")
+        vecs = pd.Series([np.random.rand(128) for _ in range(10)], name="vector")
         ids = pd.Series(range(10), name="id")
         df = pd.DataFrame([vecs, ids]).T
 

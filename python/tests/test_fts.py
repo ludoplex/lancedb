@@ -42,10 +42,10 @@ def table(tmp_path) -> ldb.table.LanceTable:
         )
         for _ in range(100)
     ]
-    table = db.create_table(
-        "test", data=pd.DataFrame({"vector": vectors, "text": text, "text2": text})
+    return db.create_table(
+        "test",
+        data=pd.DataFrame({"vector": vectors, "text": text, "text2": text}),
     )
-    return table
 
 
 def test_create_index(tmp_path):

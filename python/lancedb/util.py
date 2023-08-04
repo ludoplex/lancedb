@@ -59,10 +59,7 @@ def get_uri_location(uri: str) -> str:
     str: Location part of the URL, without scheme
     """
     parsed = urlparse(uri)
-    if not parsed.netloc:
-        return parsed.path
-    else:
-        return parsed.netloc + parsed.path
+    return parsed.path if not parsed.netloc else parsed.netloc + parsed.path
 
 
 def fs_from_uri(uri: str) -> Tuple[pa_fs.FileSystem, str]:

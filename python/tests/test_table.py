@@ -79,9 +79,7 @@ def test_create_table(db):
         ]
     ]
     df = pd.DataFrame(data[0])
-    data.append(df)
-    data.append(pa.Table.from_pandas(df, schema=schema))
-
+    data.extend((df, pa.Table.from_pandas(df, schema=schema)))
     for i, d in enumerate(data):
         tbl = (
             LanceTable.create(db, f"test_{i}", data=d, schema=schema)

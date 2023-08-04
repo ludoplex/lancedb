@@ -34,7 +34,7 @@ for file in filter(lambda file: file not in excluded_files, glob.glob(glob_strin
     with open(file, "r") as f:
         lines = list(yield_lines(iter(f), "```", "```"))
 
-    if len(lines) > 0:
+    if lines:
         out_path = Path(python_folder) / Path(file).name.strip(".md") / (Path(file).name.strip(".md") + python_file)
         print(out_path)
         out_path.parent.mkdir(exist_ok=True, parents=True)

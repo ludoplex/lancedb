@@ -55,8 +55,7 @@ class RemoteDBConnection(DBConnection):
 
     def table_names(self) -> List[str]:
         """List the names of all tables in the database."""
-        result = self._loop.run_until_complete(self._client.list_tables())
-        return result
+        return self._loop.run_until_complete(self._client.list_tables())
 
     def open_table(self, name: str) -> Table:
         """Open a Lance Table in the database.
@@ -91,8 +90,6 @@ class RemoteDBConnection(DBConnection):
                 data, schema, on_bad_vectors=on_bad_vectors, fill_value=fill_value
             )
         else:
-            if schema is None:
-                raise ValueError("Either data or schema must be provided")
             data = pa.Table.from_pylist([], schema=schema)
 
         from .table import RemoteTable

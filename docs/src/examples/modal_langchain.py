@@ -33,9 +33,7 @@ db_path = Path("lancedb")
 def get_document_title(document):
     m = str(document.metadata["source"])
     title = re.findall("pandas.documentation(.*).html", m)
-    if title[0] is not None:
-        return title[0]
-    return ""
+    return title[0] if title[0] is not None else ""
 
 
 def download_docs():
@@ -59,9 +57,7 @@ def store_docs():
             loader = UnstructuredHTMLLoader(p)
             raw_document = loader.load()
 
-            m = {}
-            m["title"] = get_document_title(raw_document[0])
-            m["version"] = "2.0rc0"
+            m = {"title": get_document_title(raw_document[0]), "version": "2.0rc0"}
             raw_document[0].metadata = raw_document[0].metadata | m
             raw_document[0].metadata["source"] = str(raw_document[0].metadata["source"])
             docs = docs + raw_document

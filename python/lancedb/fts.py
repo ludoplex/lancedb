@@ -52,8 +52,7 @@ def create_index(index_path: str, text_fields: List[str]) -> tantivy.Index:
         schema_builder.add_text_field(name, stored=True)
     schema = schema_builder.build()
     os.makedirs(index_path, exist_ok=True)
-    index = tantivy.Index(schema, path=index_path)
-    return index
+    return tantivy.Index(schema, path=index_path)
 
 
 def populate_index(index: tantivy.Index, table: LanceTable, fields: List[str]) -> int:

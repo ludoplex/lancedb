@@ -82,8 +82,7 @@ def datagen(args):
         b["image"] = b["image_bytes"]
         del b["image_bytes"]
         data.append(b)
-    tbl = pa.Table.from_pylist(data, schema=schema)
-    return tbl
+    return pa.Table.from_pylist(data, schema=schema)
 
 
 def main():

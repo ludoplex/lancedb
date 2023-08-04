@@ -315,7 +315,7 @@ class LanceTable(Table):
                vector    type
         0  [1.1, 0.9]  vector
         """
-        max_ver = max([v["version"] for v in self._dataset.versions()])
+        max_ver = max(v["version"] for v in self._dataset.versions())
         if version < 1 or version > max_ver:
             raise ValueError(f"Invalid version {version}")
         self._version = version
@@ -523,9 +523,9 @@ class LanceTable(Table):
             data = _sanitize_data(
                 data, schema, on_bad_vectors=on_bad_vectors, fill_value=fill_value
             )
+        elif schema is None:
+            raise ValueError("Either data or schema must be provided")
         else:
-            if schema is None:
-                raise ValueError("Either data or schema must be provided")
             data = pa.Table.from_pylist([], schema=schema)
         lance.write_dataset(data, tbl._dataset_uri, schema=schema, mode=mode)
         return LanceTable(db, name)
@@ -645,8 +645,7 @@ def _sanitize_vector_column(
         data.column_names.index(vector_column_name), vector_column_name, vec_arr
     )
 
-    has_nans = pc.any(pc.is_nan(vec_arr.values)).as_py()
-    if has_nans:
+    if has_nans := pc.any(pc.is_nan(vec_arr.values)).as_py():
         data = _sanitize_nans(
             data, fill_value, on_bad_vectors, vec_arr, vector_column_name
         )
